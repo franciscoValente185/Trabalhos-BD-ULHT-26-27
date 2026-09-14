@@ -1,0 +1,18 @@
+SELECT 'Olá, SQL!' AS mensagem;
+
+SELECT 2 + 3 AS soma,
+       10 * 4 AS produto,
+       9.0 / 2 AS divisao;
+
+SELECT DB_NAME() AS base_atual,
+       GETDATE() AS agora;
+
+SELECT TOP 5 *
+FROM   HR.EMPLOYEES;
+
+SELECT TOP 5
+    employee_id,
+    first_name,
+    last_name
+FROM HR.Employees;
+
