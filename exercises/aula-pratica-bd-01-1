@@ -1,0 +1,8 @@
+SELECT 'Estou pronto para SQL' AS mensagem;
+
+SELECT 3 * 12.5 AS resultado;
+
+SELECT TOP 5 
+department_id,
+department_name
+FROM HR.DEPARTMENTS;
