@@ -1,0 +1,83 @@
+USE ULHT_DB26;
+GO
+
+CREATE TABLE HR.LEARNING_PROJECT (
+    PROJECT_ID INT,
+    TITLE VARCHAR(80),
+    EXACT_BUDGET FLOAT(2),
+    DUE_DATE DATETIME2 NULL
+)
+
+ALTER TABLE HR.LEARNING_PROJECT ADD STATUS_CODE VARCHAR(12);
+
+SELECT * FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = 'HR' AND TABLE_NAME = 'LEARNING_PROJECT';
+
+ALTER TABLE HR.LEARNING_PROJECT ALTER COLUMN STATUS_CODE VARCHAR(20);
+
+SELECT * FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = 'HR' AND TABLE_NAME = 'LEARNING_PROJECT';
+
+SELECT DEPARTMENT_ID AS DEPT_ID, COUNT(*) AS EMPLOYEE_COUNT
+INTO HR.VM_DEPARTMENT_HEADCOUNT
+FROM HR.EMPLOYEES
+GROUP BY DEPARTMENT_ID;
+
+SELECT * FROM HR.VM_DEPARTMENT_HEADCOUNT;
+
+SELECT EMPLOYEE_ID AS E_ID, LAST_NAME AS SURNAME, COMMISSION_PCT AS COMMISSION_RATE
+INTO HR.COMMISSION_EMPLOYEE_COPY
+FROM HR.EMPLOYEES
+WHERE COMMISSION_PCT IS NOT NULL;
+
+SELECT * FROM HR.COMMISSION_EMPLOYEE_COPY;
+
+SELECT EMPLOYEE_ID AS E_ID, FIRST_NAME + ' ' + LAST_NAME AS FULL_NAME, SALARY
+INTO HR.HIGH_SALARY_COPY
+FROM HR.EMPLOYEES;
+
+SELECT * FROM HR.HIGH_SALARY_COPY;
+
+USE BikeStores;
+GO
+
+CREATE TABLE production.review_code (
+    product_id int NOT NULL,
+    review_notes varchar(200) NOT NULL,
+    score DECIMAL(10,2) NULL
+)
+
+SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+WHERE TABLE_SCHEMA = 'production' AND TABLE_NAME = 'review_code';
+
+ALTER TABLE production.review_code ADD reviewer_code VARCHAR(10);
+
+SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+WHERE TABLE_SCHEMA = 'production' AND TABLE_NAME = 'review_code';
+
+ALTER TABLE production.review_code ALTER COLUMN reviewer_code VARCHAR(16);
+ALTER TABLE production.review_code ADD review_date DATETIME2 NOT NULL;
+
+SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+WHERE TABLE_SCHEMA = 'production' AND TABLE_NAME = 'review_code';
+
+SELECT category_id, count(*) as product_count, min(list_price) as min_price, avg(list_price) as avg_price
+INTO production.vw_category_price_summary
+FROM production.products
+GROUP BY category_id;
+
+SELECT * FROM production.vw_category_price_summary;
+
+SELECT * FROM production.vw_category_price_summary
+WHERE avg_price > (SELECT AVG(list_price) FROM production.products);
+
+CREATE NONCLUSTERED INDEX index_role
+ON production.review_code (product_id, review_date DESC);
+
+SELECT product_id, product_name, model_year, list_price
+INTO production.discuntinued_products
+FROM production.products
+WHERE model_year < (SELECT MAX(model_year) FROM production.products);
+
+SELECT * FROM production.discuntinued_products;
+
